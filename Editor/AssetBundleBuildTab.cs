@@ -13,7 +13,7 @@ namespace AssetBundleBrowser
     {
         const string k_BuildPrefPrefix = "ABBBuild:";
 
-		private string _streamingPath = "Assets/StreamingAssets";
+		private const string _streamingPath = "Assets/StreamingAssets/AssetBundles";
 		private string m_streamingPath
 		{
 			get
