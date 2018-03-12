@@ -13,7 +13,16 @@ namespace AssetBundleBrowser
     {
         const string k_BuildPrefPrefix = "ABBBuild:";
 
-        private string m_streamingPath = "Assets/StreamingAssets";
+		private string _streamingPath = "Assets/StreamingAssets";
+		private string m_streamingPath
+		{
+			get
+			{
+				string platformName = AssetBundles.Utility.GetPlatformName();
+				string path = Path.Combine(_streamingPath, platformName);
+				return path;
+			}
+		}
 
         [SerializeField]
         private bool m_AdvancedSettings;
