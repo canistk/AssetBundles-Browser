@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !IDE // monodevelop can't deal with Boo, at least on Windows / Unity 2017
+using System;
 using System.CodeDom;
 using UnityEngine;
 using UnityEditor;
@@ -773,3 +774,4 @@ namespace AssetBundleBrowserTests
         }
     }
 }
+#endif // !IDE
