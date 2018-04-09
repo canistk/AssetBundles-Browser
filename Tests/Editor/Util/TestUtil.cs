@@ -1,4 +1,4 @@
-﻿#if !IDE // monodevelop can't deal with Boo, at least on Windows / Unity 2017
+﻿#if false // IDEs can't deal with Boo, at least on Windows / Unity 2017
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,4 +60,4 @@ namespace Assets.Editor.Tests.Util
         }
     }
 }
-#endif // !IDE
+#endif // false
