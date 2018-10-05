@@ -197,7 +197,7 @@ namespace AssetBundleBrowser
                     if(m_UserData.m_UseDefaultPath)
                     {
                         m_UserData.m_OutputPath = "AssetBundles/";
-                        m_UserData.m_OutputPath += m_UserData.m_BuildTarget.ToString();
+                        m_UserData.m_OutputPath += ResolvePlatformDefaultName(m_UserData.m_BuildTarget);
                         //EditorUserBuildSettings.SetPlatformSettings(EditorUserBuildSettings.activeBuildTarget.ToString(), "AssetBundleOutputPath", m_OutputPath);
                     }
                 }
@@ -422,9 +422,24 @@ namespace AssetBundleBrowser
         {
             m_UserData.m_UseDefaultPath = true;
             m_UserData.m_OutputPath = "AssetBundles/";
-            m_UserData.m_OutputPath += m_UserData.m_BuildTarget.ToString();
+
+			m_UserData.m_OutputPath += ResolvePlatformDefaultName(m_UserData.m_BuildTarget);
             //EditorUserBuildSettings.SetPlatformSettings(EditorUserBuildSettings.activeBuildTarget.ToString(), "AssetBundleOutputPath", m_OutputPath);
         }
+
+		private string ResolvePlatformDefaultName(ValidBuildTarget buildTarget)
+		{
+			/// <see cref="AssetBundles.Utility.GetPlatformForAssetBundles(BuildTarget target)"/>
+			switch (m_UserData.m_BuildTarget)
+			{
+				case ValidBuildTarget.StandaloneWindows:
+				case ValidBuildTarget.StandaloneWindows64:
+					return "Windows";
+				default:
+					return m_UserData.m_BuildTarget.ToString();
+			}
+		}
+
 
         //Note: this is the provided BuildTarget enum with some entries removed as they are invalid in the dropdown
         internal enum ValidBuildTarget
