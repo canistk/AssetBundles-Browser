@@ -392,8 +392,8 @@ namespace AssetBundleBrowser
 #if ORG
 				string newFilePath = Path.Combine(Path.GetDirectoryName(filePath).Replace(sourceDirName, destDirName), Path.GetFileName(filePath));
 #else
-				string dir = Path.GetDirectoryName(filePath);
 				string fileName = Path.GetFileName(filePath);
+				//string dir = Path.GetDirectoryName(filePath);
 				// following line cause IO.Exception, result in cannot copy file into steaming asset folder.
 				// string replace = dir.Replace(sourceDirName, destDirName);
 				// string newFilePath = Path.Combine(replace, fileName);
