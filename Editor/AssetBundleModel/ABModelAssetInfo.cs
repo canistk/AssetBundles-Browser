@@ -73,7 +73,7 @@ namespace AssetBundleBrowser.AssetBundleModel
         internal bool isFolder { get; set; }
         internal long fileSize;
 
-        private HashSet<string> m_Parents;
+        private HashSet<AssetInfo> m_Parents; // parent data, parent name
         private string m_AssetName;
         private string m_DisplayName;
         private string m_BundleName;
@@ -83,7 +83,7 @@ namespace AssetBundleBrowser.AssetBundleModel
         {
             fullAssetName = inName;
             m_BundleName = bundleName;
-            m_Parents = new HashSet<string>();
+			m_Parents = new HashSet<AssetInfo>();
             isScene = false;
             isFolder = false;
         }
@@ -96,12 +96,19 @@ namespace AssetBundleBrowser.AssetBundleModel
                 m_AssetName = value;
                 m_DisplayName = System.IO.Path.GetFileNameWithoutExtension(m_AssetName);
 
-                //TODO - maybe there's a way to ask the AssetDatabase for this size info.
                 System.IO.FileInfo fileInfo = new System.IO.FileInfo(m_AssetName);
                 if (fileInfo.Exists)
-                    fileSize = fileInfo.Length;
+                {
+                    Object obj = AssetDatabase.LoadMainAssetAtPath(m_AssetName);
+                    fileSize = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(obj);
+                    // The above isn't supported for all asset types:
+                    if (fileSize == 0)
+                        fileSize = fileInfo.Length;
+                }
                 else
+                {
                     fileSize = 0;
+                }
             }
         }
         internal string displayName
@@ -110,7 +117,7 @@ namespace AssetBundleBrowser.AssetBundleModel
         }
         internal string bundleName
         { get { return System.String.IsNullOrEmpty(m_BundleName) ? "auto" : m_BundleName; } }
-        
+
         internal Color GetColor()
         {
             if (System.String.IsNullOrEmpty(m_BundleName))
@@ -167,11 +174,11 @@ namespace AssetBundleBrowser.AssetBundleModel
                 var message = displayName + "\n" + "Is auto included in bundle(s) due to parent(s): \n";
                 foreach (var parent in m_Parents)
                 {
-                    message += parent + ", ";
+                    message += parent.displayName + ", ";
                 }
                 message = message.Substring(0, message.Length - 2);//remove trailing comma.
                 messages.Add(new MessageSystem.Message(message, MessageType.Info));
-            }            
+            }
 
             if (m_dependencies != null && m_dependencies.Count > 0)
             {
@@ -189,19 +196,15 @@ namespace AssetBundleBrowser.AssetBundleModel
                     message = message.Substring(0, message.Length - 1);//remove trailing line break.
                     messages.Add(new MessageSystem.Message(message, MessageType.Info));
                 }
-            }            
+            }
 
             messages.Add(new MessageSystem.Message(displayName + "\n" + "Path: " + fullAssetName, MessageType.Info));
 
             return messages;
         }
-        internal void AddParent(string name)
+        internal void AddParent(AssetInfo asset)
         {
-            m_Parents.Add(name);
-        }
-        internal void RemoveParent(string name)
-        {
-            m_Parents.Remove(name);
+            m_Parents.Add(asset);
         }
 
         internal string GetSizeString()
